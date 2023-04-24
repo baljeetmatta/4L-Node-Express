@@ -13,6 +13,7 @@ server.listen(3000);
 const express=require("express");
 const path=require("path")
 const app=express();
+const products=require("./data");
 
 app.listen(3000,(err)=>{
     if(err)
@@ -22,6 +23,10 @@ app.listen(3000,(err)=>{
 });
 
 app.use(express.static("public"));
+app.use(express.json());
+
+app.use(express.urlencoded({extended:true}));
+
 
 app.get("/",(req,res)=>{
     res.send("Welcome to home page");
@@ -60,6 +65,47 @@ res.send("test called  "+req.query.name);
 
 // })
 
+
+// /sendData/1
+app.get("/sendData",(req,res)=>{
+
+   console.log(req.query);
+})
+app.post("/sendData",(req,res)=>{
+
+    console.log(req.body);
+
+    res.end();
+ })
+ app.get("/jsonData",(req,res)=>{
+    //res.json({"name":"abc","age":20});
+    res.json(products);
+
+
+
+ })
+ app.get("/singleData/:x",(req,res)=>{
+    //res.json({"name":"abc","age":20});
+  //  res.json(products);
+  //console.log(req.params.x);
+  const newProducts=products.filter((item)=>{
+    if(item.id==req.params.x)
+    return true;
+  })
+  res.json(newProducts);
+
+
+
+ })
+ app.get("/queryData",(req,res)=>{
+
+    const newProducts=products.filter((item)=>{
+        if(item.id==req.query.id)
+        return true;
+      })
+      res.json(newProducts);
+
+ })
 app.all("*",(req,res)=>{
     res.status(404).send("Page not found");
 
@@ -67,3 +113,11 @@ app.all("*",(req,res)=>{
 
 //get,post,put,delete,all
 //fetch,save,update,delete
+/*
+npm install body-parser
+
+
+const bodyparser=require("body-parser");
+app.use(bodyparse.urlEncoded({extended:true}));
+
+*/
